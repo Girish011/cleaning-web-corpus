@@ -1,0 +1,55 @@
+================================================================================
+DATASET STATISTICS REPORT
+================================================================================
+Generated: 2025-12-19T14:14:03.401884
+Data file: /Users/girish11/cleaning-web-corpus/data/processed/cleaning_docs.jsonl
+Total documents: 6
+
+BASIC STATISTICS
+--------------------------------------------------------------------------------
+Total documents: 6
+Total images: 0
+Documents with images: 0
+Average images per document: 0.0
+
+Source type distribution:
+  pillows_bedding: 2
+  unknown: 2
+  carpets_floors: 2
+
+TEXT STATISTICS
+--------------------------------------------------------------------------------
+Word count distribution:
+  Min: 546, Max: 2078, Mean: 1210.83
+  Percentiles: P25=851, P50=1228, P75=1516, P95=2078
+Total words: 7,265
+
+COVERAGE ANALYSIS
+--------------------------------------------------------------------------------
+Unique surface types: 3
+Unique dirt types: 2
+Unique cleaning methods: 3
+Total combinations: 5
+
+Surface type distribution:
+  clothes: 3
+  pillows_bedding: 2
+  carpets_floors: 1
+
+Dirt type distribution:
+  dust: 3
+  stain: 3
+
+Cleaning method distribution:
+  vacuum: 3
+  hand_wash: 2
+  washing_machine: 1
+
+ENRICHMENT STATISTICS
+--------------------------------------------------------------------------------
+Documents with tools: 6
+Total tools extracted: 30
+Documents with steps: 6
+Total steps extracted: 90
+Extraction methods:
+  ner: 6

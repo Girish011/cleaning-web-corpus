@@ -1,0 +1,187 @@
+{
+  "metadata": {
+    "computed_at": "2025-12-19T14:14:03.401884",
+    "data_file": "/Users/girish11/cleaning-web-corpus/data/processed/cleaning_docs.jsonl",
+    "total_documents": 6
+  },
+  "basic": {
+    "total_documents": 6,
+    "source_type_distribution": {
+      "pillows_bedding": 2,
+      "unknown": 2,
+      "carpets_floors": 2
+    },
+    "language_distribution": {
+      "en": 6
+    },
+    "images": {
+      "total_images": 0,
+      "documents_with_images": 0,
+      "documents_without_images": 6,
+      "avg_images_per_doc": 0.0
+    },
+    "videos": {
+      "total_videos": 0,
+      "documents_with_videos": 0,
+      "documents_without_videos": 6
+    }
+  },
+  "text": {
+    "word_count": {
+      "min": 546,
+      "p25": 851,
+      "p50": 1228,
+      "p75": 1516,
+      "p95": 2078,
+      "p99": 2078,
+      "max": 2078,
+      "mean": 1210.83,
+      "stdev": 537.41
+    },
+    "character_count": {
+      "min": 2997,
+      "p25": 4729,
+      "p50": 7295,
+      "p75": 9039,
+      "p95": 13277,
+      "p99": 13277,
+      "max": 13277,
+      "mean": 7269.17,
+      "stdev": 3603.15
+    },
+    "avg_word_length": {
+      "min": 4.490842490842491,
+      "p25": 4.558166862514689,
+      "p50": 4.963060686015831,
+      "p75": 5.002868068833652,
+      "p95": 5.389797882579403,
+      "p99": 5.389797882579403,
+      "max": 5.389797882579403,
+      "mean": 4.89,
+      "stdev": 0.33
+    },
+    "total_words": 7265,
+    "total_characters": 43615
+  },
+  "image": {
+    "total_images": 0,
+    "resolutions": {},
+    "aspect_ratios": {},
+    "formats": {},
+    "file_sizes_bytes": {}
+  },
+  "coverage": {
+    "surface_type_distribution": {
+      "pillows_bedding": 2,
+      "clothes": 3,
+      "carpets_floors": 1
+    },
+    "dirt_type_distribution": {
+      "dust": 3,
+      "stain": 3
+    },
+    "cleaning_method_distribution": {
+      "washing_machine": 1,
+      "hand_wash": 2,
+      "vacuum": 3
+    },
+    "surface_x_dirt": {
+      "pillows_bedding": {
+        "dust": 2
+      },
+      "clothes": {
+        "stain": 2,
+        "dust": 1
+      },
+      "carpets_floors": {
+        "stain": 1
+      }
+    },
+    "surface_x_method": {
+      "pillows_bedding": {
+        "washing_machine": 1,
+        "vacuum": 1
+      },
+      "clothes": {
+        "hand_wash": 2,
+        "vacuum": 1
+      },
+      "carpets_floors": {
+        "vacuum": 1
+      }
+    },
+    "dirt_x_method": {
+      "dust": {
+        "washing_machine": 1,
+        "vacuum": 2
+      },
+      "stain": {
+        "hand_wash": 2,
+        "vacuum": 1
+      }
+    },
+    "surface_x_dirt_x_method": {
+      "pillows_bedding": {
+        "dust": {
+          "washing_machine": 1,
+          "vacuum": 1
+        }
+      },
+      "clothes": {
+        "stain": {
+          "hand_wash": 2
+        },
+        "dust": {
+          "vacuum": 1
+        }
+      },
+      "carpets_floors": {
+        "stain": {
+          "vacuum": 1
+        }
+      }
+    },
+    "coverage_summary": {
+      "unique_surfaces": 3,
+      "unique_dirt_types": 2,
+      "unique_methods": 3,
+      "total_combinations": 5
+    }
+  },
+  "enrichment": {
+    "tools": {
+      "documents_with_tools": 6,
+      "documents_without_tools": 0,
+      "total_tools_extracted": 30,
+      "avg_tools_per_doc": 5.0,
+      "most_common_tools": {
+        "detergent": 6,
+        "towel": 5,
+        "brush": 4,
+        "spray_bottle": 3,
+        "vinegar": 3,
+        "baking_soda": 3,
+        "vacuum": 3,
+        "bleach": 1,
+        "steam_cleaner": 1,
+        "microfiber_cloth": 1
+      }
+    },
+    "steps": {
+      "documents_with_steps": 6,
+      "documents_without_steps": 0,
+      "total_steps_extracted": 90,
+      "avg_steps_per_doc": 15.0
+    },
+    "extraction_methods": {
+      "ner": 6
+    }
+  },
+  "quality": {
+    "clip_scores": {
+      "distribution": {},
+      "total_images_scored": 0,
+      "documents_with_scored_images": 0
+    }
+  }
+}

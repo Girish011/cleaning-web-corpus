@@ -1,0 +1,90 @@
+# Multi-modal cleaning corpus pipeline configuration
+
+project:
+  name: "cleaning-corpus"
+  version: "0.2.0"
+
+crawler:
+  seeds_file: "data/seeds.txt"
+  download_images: true
+  max_images_per_page: 20
+  respect_robots: true
+  delay_seconds: 1.0
+  images_store: "data/images"
+  images_expires_days: 90
+  images_min_height: 110
+  images_min_width: 110
+
+quality:
+  text:
+    min_words: 500
+    max_words: 50000
+    min_avg_word_length: 3.0
+    language: "en"
+    # Repetition filter settings
+    max_char_repetition_ratio: 0.3  # Max 30% of text can be repeated characters
+    max_word_repetition_ratio: 0.6  # Max 60% of content words can be duplicates (excludes common words)
+    max_ngram_repetition: 8  # N-grams can appear max 8 times (allows domain phrases like "how to clean")
+    ngram_size: 3  # Check 3-word phrases for repetition
+    min_text_length_for_repetition_check: 50  # Skip repetition check for texts < 50 words
+    # Perplexity filter settings (KenLM)
+    enable_perplexity_filter: true  # Enable perplexity-based quality filtering
+    kenlm_model_path: null  # Path to KenLM model file (.arpa or .bin). Set to null to skip.
+    max_perplexity: 1000.0  # Maximum perplexity allowed (lower is better: 50-500 = good, >1000 = gibberish)
+    min_text_length_for_perplexity: 20  # Skip perplexity check for texts < 20 words
+  image:
+    min_resolution: [224, 224]
+    max_aspect_ratio: 3.0
+    allowed_formats: ["jpg", "jpeg", "png", "webp"]
+    # Duplicate detection settings
+    enable_duplicate_detection: true  # Enable duplicate/near-duplicate detection
+    duplicate_hash_algorithm: "phash"  # phash (perceptual), dhash (difference), whash (wavelet), average_hash
+    duplicate_similarity_threshold: 5  # Hamming distance threshold (0=exact, 5=very similar, higher=more lenient)
+    min_images_for_duplicate_check: 2  # Minimum images needed to check for duplicates
+  alignment:
+    min_clip_score: 0.2  # Text-image relevance threshold
+
+enrichment:
+  extraction:
+    method: "rule_based"  # "rule_based", "ner", "llm"
+    enable_tools_extraction: true
+    enable_steps_extraction: true
+    min_steps_confidence: 0.5  # Minimum confidence for step extraction (0.0-1.0)
+    ner:
+      model_name: "en_core_web_sm"  # spaCy model: "en_core_web_sm", "en_core_web_md", etc.
+    llm:
+      provider: "openai"  # "openai", "anthropic", "ollama"
+      model: "gpt-4o-mini"  # Model name (e.g., "gpt-4o-mini", "claude-3-haiku", "llama2")
+      api_key: null  # Set via environment variable: OPENAI_API_KEY, ANTHROPIC_API_KEY, or OLLAMA_BASE_URL
+      temperature: 0.1  # Sampling temperature (0.0-2.0)
+      max_tokens: 500  # Maximum tokens in response
+      enable_caching: true  # Cache LLM responses to reduce API calls
+      cache_ttl_days: 30  # Cache TTL in days
+  captioning:
+    enable: true  # Enable image captioning with BLIP-2
+    model: "Salesforce/blip2-opt-2.7b"  # BLIP-2 model: "Salesforce/blip2-opt-2.7b" (smaller, faster) or "Salesforce/blip2-opt-6.7b" (larger, better)
+    device: "auto"  # "auto", "cuda", "cpu" - auto detects GPU if available
+    max_length: 50  # Maximum caption length in tokens
+    min_confidence: 0.5  # Minimum confidence (for future use)
+    prompt: null  # Optional prompt (e.g., "a photo of") - null uses default
+
+processing:
+  batch_size: 100
+  num_workers: 4
+
+logging:
+  level: "INFO"
+  format: "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+
+# Allowed domains (from original config.json)
+allowed_domains:
+  - puffy.com
+  - maidbrigade.com
+  - ariel.in
+  - vanish.co.in
+  - floorworld.com.au
+  - mycleaners.in
+  - thelaundress.com
+  - knowingfabric.com
+  - bigbrandwholesale.com
+  - electrolux.in

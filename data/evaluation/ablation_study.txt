@@ -1,0 +1,25 @@
+================================================================================
+QUALITY FILTER ABLATION STUDY
+================================================================================
+Generated: 2025-12-19T15:39:14.366726
+Processed data file: /Users/girish11/cleaning-web-corpus/data/processed/cleaning_docs.jsonl
+
+FILTER IMPACT SUMMARY
+--------------------------------------------------------------------------------
+Filter Combination             Retention %     Rejection %     Passed     Failed    
+--------------------------------------------------------------------------------
+baseline                              100.00%          0.00%         6         0
+word_count                            100.00%          0.00%         6         0
+avg_word_length                       100.00%          0.00%         6         0
+language                              100.00%          0.00%         6         0
+repetition                            100.00%          0.00%         6         0
+perplexity                            100.00%          0.00%         6         0
+resolution                            100.00%          0.00%         6         0
+aspect_ratio                          100.00%          0.00%         6         0
+format                                100.00%          0.00%         6         0
+duplicate_detection                   100.00%          0.00%         6         0
+clip_alignment                        100.00%          0.00%         6         0
+all_filters                           100.00%          0.00%         6         0
+
+FILTER OVERLAP ANALYSIS
+--------------------------------------------------------------------------------

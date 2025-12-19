@@ -1,0 +1,23 @@
+scrapy
+trafilatura
+requests
+pyyaml
+pydantic>=2.0
+pytest
+Pillow>=10.0.0
+langdetect
+kenlm
+imagehash
+torch>=2.0.0
+transformers>=4.30.0
+# Phase 4.2: NER/LLM extraction
+spacy>=3.7.0
+# LLM providers (optional - install as needed)
+# openai>=1.0.0  # For OpenAI
+# anthropic>=0.18.0  # For Anthropic
+# ollama>=0.1.0  # For Ollama
+# Phase 4.3: Image captioning (BLIP-2 uses transformers, already included)
+# accelerate>=0.20.0  # Recommended for BLIP-2 performance
+# Phase 5.4: Visualizations
+matplotlib>=3.7.0
+numpy>=1.24.0

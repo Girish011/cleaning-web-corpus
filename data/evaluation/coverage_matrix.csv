@@ -1,0 +1,6 @@
+surface_type,dirt_type,cleaning_method,count
+carpets_floors,stain,vacuum,1
+clothes,dust,vacuum,1
+clothes,stain,hand_wash,2
+pillows_bedding,dust,vacuum,1
+pillows_bedding,dust,washing_machine,1

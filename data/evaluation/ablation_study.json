@@ -1,0 +1,146 @@
+{
+  "metadata": {
+    "computed_at": "2025-12-19T15:39:14.366415",
+    "processed_data_file": "/Users/girish11/cleaning-web-corpus/data/processed/cleaning_docs.jsonl"
+  },
+  "results": [
+    {
+      "filter_combination": "baseline",
+      "enabled_filters": [],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0
+    },
+    {
+      "filter_combination": "word_count",
+      "enabled_filters": [
+        "word_count"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "avg_word_length",
+      "enabled_filters": [
+        "avg_word_length"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "language",
+      "enabled_filters": [
+        "language"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "repetition",
+      "enabled_filters": [
+        "repetition"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "perplexity",
+      "enabled_filters": [
+        "perplexity"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "resolution",
+      "enabled_filters": [
+        "resolution"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "aspect_ratio",
+      "enabled_filters": [
+        "aspect_ratio"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "format",
+      "enabled_filters": [
+        "format"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "duplicate_detection",
+      "enabled_filters": [
+        "duplicate_detection"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "clip_alignment",
+      "enabled_filters": [
+        "clip_alignment"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0,
+      "failed_reasons": {}
+    },
+    {
+      "filter_combination": "all_filters",
+      "enabled_filters": [
+        "word_count",
+        "repetition",
+        "resolution",
+        "avg_word_length",
+        "perplexity",
+        "format",
+        "language",
+        "duplicate_detection",
+        "aspect_ratio",
+        "clip_alignment"
+      ],
+      "documents_passed": 6,
+      "documents_failed": 0,
+      "retention_rate": 1.0,
+      "rejection_rate": 0.0
+    }
+  ],
+  "filter_overlap": {}
+}
