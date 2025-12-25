@@ -13,14 +13,18 @@ class SeedSpider(scrapy.Spider):
 
         with seeds_file.open() as f:
             for line in f:
+                # Remove inline comments (everything after #)
+                if "#" in line:
+                    line = line.split("#")[0]
                 url = line.strip()
-                if not url:
+                # Skip empty lines and comment-only lines
+                if not url or url.startswith("#"):
                     continue
                 yield scrapy.Request(url=url, callback=self.parse)
 
     def parse(self, response):
         title = response.xpath("//title/text()").get() or ""
-        
+
         images = response.css("img")
         image_urls = []
         image_details = []
@@ -53,7 +57,7 @@ class SeedSpider(scrapy.Spider):
                 "url": full_url,
                 "position": idx,
         })
-        
+
         yield {
             "url": response.url,
             "title": title.strip(),

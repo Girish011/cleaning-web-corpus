@@ -1,0 +1,14 @@
+cleaning_warehouse:
+  target: dev
+  outputs:
+    dev:
+      type: clickhouse
+      schema: cleaning_warehouse
+      host: localhost
+      port: 9000
+      user: default
+      password: default
+      database: cleaning_warehouse
+      secure: false
+      verify: false
+

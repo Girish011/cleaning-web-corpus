@@ -54,3 +54,44 @@ htmlcov/
 .mypy_cache/
 .dmypy.json
 dmypy.json
+
+# SonarQube
+.sonar/
+.scannerwork/
+test-reports/
+coverage.xml
+htmlcov/
+
+# Analysis reports
+bandit-report.json
+safety-report.json
+
+# Logs
+*.log
+MUJOCO_LOG.TXT
+
+# Generated evaluation data
+data/evaluation/*.csv
+data/evaluation/*.json
+data/evaluation/*.txt
+data/evaluation/visualizations/*.png
+data/seeds_discovered.txt
+data/seeds_discovered_history.json
+
+# Temporary notes/work-in-progress
+GRASP_FIXES.md
+LOGGING_IMPROVEMENTS.md
+PICK_PLACE_FIXES.md
+SMOOTH_MOTION_IMPROVEMENTS.md
+TESTING.md
+RUN_SONARQUBE_ANALYSIS.md
+run_commands.txt
+
+# dbt artifacts
+dbt/target/
+dbt/logs/
+
+.cursor/
+tasks.md
+
+run_commands.txt

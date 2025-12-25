@@ -25,7 +25,7 @@ class DatasetStatistics:
     Computes detailed statistics about the processed corpus including
     distributions, coverage analysis, and quality metrics.
     """
-    
+
     def __init__(self, data_path: pathlib.Path):
         """
         Initialize statistics calculator.
@@ -36,12 +36,12 @@ class DatasetStatistics:
         self.data_path = data_path
         self.documents = []
         self.stats = {}
-        
+
     def load_data(self) -> None:
         """Load all documents from JSONL file."""
         if not self.data_path.exists():
             raise FileNotFoundError(f"Data file not found: {self.data_path}")
-        
+
         self.documents = []
         with self.data_path.open(encoding='utf-8') as f:
             for line in f:
@@ -53,7 +53,7 @@ class DatasetStatistics:
                 except json.JSONDecodeError as e:
                     print(f"Warning: Skipping invalid JSON line: {e}")
                     continue
-    
+
     def compute_all(self) -> Dict:
         """
         Compute all statistics.
@@ -63,7 +63,7 @@ class DatasetStatistics:
         """
         if not self.documents:
             self.load_data()
-        
+
         self.stats = {
             "metadata": {
                 "computed_at": datetime.now().isoformat(),
@@ -77,9 +77,9 @@ class DatasetStatistics:
             "enrichment": self.compute_enrichment_stats(),
             "quality": self.compute_quality_metrics(),
         }
-        
+
         return self.stats
-    
+
     def compute_basic_stats(self) -> Dict:
         """Compute basic counts and totals."""
         source_counts = Counter()
@@ -88,21 +88,21 @@ class DatasetStatistics:
         total_videos = 0
         docs_with_images = 0
         docs_with_videos = 0
-        
+
         for doc in self.documents:
             source_counts[doc.get("source_type", "unknown")] += 1
             language_counts[doc.get("language", "unknown")] += 1
-            
+
             images = doc.get("images", [])
             if images:
                 docs_with_images += 1
                 total_images += len(images)
-            
+
             video_urls = doc.get("video_urls", [])
             if video_urls:
                 docs_with_videos += 1
                 total_videos += len(video_urls)
-        
+
         return {
             "total_documents": len(self.documents),
             "source_type_distribution": dict(source_counts),
@@ -119,26 +119,26 @@ class DatasetStatistics:
                 "documents_without_videos": len(self.documents) - docs_with_videos,
             },
         }
-    
+
     def compute_text_stats(self) -> Dict:
         """Compute text statistics including distributions."""
         word_counts = []
         char_counts = []
         avg_word_lengths = []
-        
+
         for doc in self.documents:
             text = doc.get("main_text", "") or ""
             words = text.split()
             word_count = len(words)
             char_count = len(text)
-            
+
             word_counts.append(word_count)
             char_counts.append(char_count)
-            
+
             if words:
                 avg_word_length = sum(len(word) for word in words) / len(words)
                 avg_word_lengths.append(avg_word_length)
-        
+
         def compute_percentiles(values: List[float]) -> Dict:
             """Compute percentiles for a list of values."""
             if not values:
@@ -155,7 +155,7 @@ class DatasetStatistics:
                 "mean": round(statistics.mean(values), 2),
                 "stdev": round(statistics.stdev(values), 2) if len(values) > 1 else 0,
             }
-        
+
         return {
             "word_count": compute_percentiles(word_counts),
             "character_count": compute_percentiles(char_counts),
@@ -163,7 +163,7 @@ class DatasetStatistics:
             "total_words": sum(word_counts),
             "total_characters": sum(char_counts),
         }
-    
+
     def compute_image_stats(self) -> Dict:
         """Compute image statistics."""
         resolutions = []
@@ -171,26 +171,26 @@ class DatasetStatistics:
         formats = Counter()
         file_sizes = []
         total_images = 0
-        
+
         for doc in self.documents:
             images = doc.get("images", [])
             for img in images:
                 if "error" in img:
                     continue
-                
+
                 width = img.get("width")
                 height = img.get("height")
                 file_size = img.get("file_size")
-                
+
                 if width and height:
                     resolutions.append((width, height))
                     if height > 0:
                         aspect_ratio = max(width, height) / min(width, height)
                         aspect_ratios.append(aspect_ratio)
-                
+
                 if file_size:
                     file_sizes.append(file_size)
-                
+
                 # Extract format from path or URL
                 path = img.get("path", "")
                 url = img.get("url", "")
@@ -202,17 +202,17 @@ class DatasetStatistics:
                     ext = pathlib.Path(url).suffix.lower().lstrip('.')
                     if ext:
                         formats[ext] += 1
-                
+
                 total_images += 1
-        
+
         def compute_resolution_stats(resolutions: List[Tuple[int, int]]) -> Dict:
             """Compute statistics for image resolutions."""
             if not resolutions:
                 return {}
-            
+
             widths = [r[0] for r in resolutions]
             heights = [r[1] for r in resolutions]
-            
+
             return {
                 "width": {
                     "min": min(widths),
@@ -226,7 +226,7 @@ class DatasetStatistics:
                 },
                 "total_images": len(resolutions),
             }
-        
+
         def compute_percentiles(values: List[float]) -> Dict:
             """Compute percentiles."""
             if not values:
@@ -241,7 +241,7 @@ class DatasetStatistics:
                 "max": round(max(values), 2),
                 "mean": round(statistics.mean(values), 2),
             }
-        
+
         return {
             "total_images": total_images,
             "resolutions": compute_resolution_stats(resolutions),
@@ -249,39 +249,39 @@ class DatasetStatistics:
             "formats": dict(formats),
             "file_sizes_bytes": compute_percentiles(file_sizes) if file_sizes else {},
         }
-    
+
     def compute_coverage_analysis(self) -> Dict:
         """Compute coverage analysis (surface × dirt × method)."""
         surface_counts = Counter()
         dirt_counts = Counter()
         method_counts = Counter()
-        
+
         # Joint distributions
         surface_dirt = defaultdict(lambda: defaultdict(int))
         surface_method = defaultdict(lambda: defaultdict(int))
         dirt_method = defaultdict(lambda: defaultdict(int))
         surface_dirt_method = defaultdict(lambda: defaultdict(lambda: defaultdict(int)))
-        
+
         for doc in self.documents:
             surface = doc.get("surface_type", "unknown")
             dirt = doc.get("dirt_type", "unknown")
             method = doc.get("cleaning_method", "unknown")
-            
+
             surface_counts[surface] += 1
             dirt_counts[dirt] += 1
             method_counts[method] += 1
-            
+
             surface_dirt[surface][dirt] += 1
             surface_method[surface][method] += 1
             dirt_method[dirt][method] += 1
             surface_dirt_method[surface][dirt][method] += 1
-        
+
         # Convert nested defaultdicts to regular dicts for JSON serialization
         def to_dict(d):
             if isinstance(d, defaultdict):
                 return {k: to_dict(v) for k, v in d.items()}
             return d
-        
+
         return {
             "surface_type_distribution": dict(surface_counts),
             "dirt_type_distribution": dict(dirt_counts),
@@ -300,7 +300,7 @@ class DatasetStatistics:
                 ),
             },
         }
-    
+
     def compute_enrichment_stats(self) -> Dict:
         """Compute enrichment statistics (tools, steps extraction)."""
         docs_with_tools = 0
@@ -309,12 +309,12 @@ class DatasetStatistics:
         total_steps = 0
         tools_counter = Counter()
         extraction_methods = Counter()
-        
+
         for doc in self.documents:
             tools = doc.get("tools", [])
             steps = doc.get("steps", [])
             extraction_metadata = doc.get("extraction_metadata", {})
-            
+
             if tools:
                 docs_with_tools += 1
                 total_tools += len(tools)
@@ -323,14 +323,14 @@ class DatasetStatistics:
                         tools_counter[tool] += 1
                     elif isinstance(tool, dict):
                         tools_counter[tool.get("name", "unknown")] += 1
-            
+
             if steps:
                 docs_with_steps += 1
                 total_steps += len(steps)
-            
+
             method = extraction_metadata.get("extraction_method", "unknown")
             extraction_methods[method] += 1
-        
+
         return {
             "tools": {
                 "documents_with_tools": docs_with_tools,
@@ -347,12 +347,12 @@ class DatasetStatistics:
             },
             "extraction_methods": dict(extraction_methods),
         }
-    
+
     def compute_quality_metrics(self) -> Dict:
         """Compute quality metrics (CLIP scores, filter stats)."""
         clip_scores = []
         docs_with_clip_scores = 0
-        
+
         for doc in self.documents:
             images = doc.get("images", [])
             for img in images:
@@ -360,7 +360,7 @@ class DatasetStatistics:
                 if clip_score is not None:
                     clip_scores.append(clip_score)
                     docs_with_clip_scores += 1
-        
+
         def compute_percentiles(values: List[float]) -> Dict:
             """Compute percentiles."""
             if not values:
@@ -375,7 +375,7 @@ class DatasetStatistics:
                 "max": round(max(values), 4),
                 "mean": round(statistics.mean(values), 4),
             }
-        
+
         return {
             "clip_scores": {
                 "distribution": compute_percentiles(clip_scores) if clip_scores else {},
@@ -383,17 +383,17 @@ class DatasetStatistics:
                 "documents_with_scored_images": docs_with_clip_scores,
             },
         }
-    
+
     def save_json(self, output_path: pathlib.Path) -> None:
         """Save statistics as JSON file."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with output_path.open('w', encoding='utf-8') as f:
             json.dump(self.stats, f, indent=2, ensure_ascii=False)
-    
+
     def save_text_report(self, output_path: pathlib.Path) -> None:
         """Save statistics as human-readable text report."""
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         lines = []
         lines.append("=" * 80)
         lines.append("DATASET STATISTICS REPORT")
@@ -402,7 +402,7 @@ class DatasetStatistics:
         lines.append(f"Data file: {self.stats['metadata']['data_file']}")
         lines.append(f"Total documents: {self.stats['metadata']['total_documents']}")
         lines.append("")
-        
+
         # Basic stats
         lines.append("BASIC STATISTICS")
         lines.append("-" * 80)
@@ -416,7 +416,7 @@ class DatasetStatistics:
         for source, count in sorted(basic['source_type_distribution'].items(), key=lambda x: -x[1]):
             lines.append(f"  {source}: {count}")
         lines.append("")
-        
+
         # Text stats
         lines.append("TEXT STATISTICS")
         lines.append("-" * 80)
@@ -428,7 +428,7 @@ class DatasetStatistics:
             lines.append(f"  Percentiles: P25={wc['p25']}, P50={wc['p50']}, P75={wc['p75']}, P95={wc['p95']}")
         lines.append(f"Total words: {text['total_words']:,}")
         lines.append("")
-        
+
         # Coverage
         lines.append("COVERAGE ANALYSIS")
         lines.append("-" * 80)
@@ -450,7 +450,7 @@ class DatasetStatistics:
         for method, count in sorted(coverage['cleaning_method_distribution'].items(), key=lambda x: -x[1]):
             lines.append(f"  {method}: {count}")
         lines.append("")
-        
+
         # Enrichment
         lines.append("ENRICHMENT STATISTICS")
         lines.append("-" * 80)
@@ -463,29 +463,29 @@ class DatasetStatistics:
         for method, count in sorted(enrichment['extraction_methods'].items(), key=lambda x: -x[1]):
             lines.append(f"  {method}: {count}")
         lines.append("")
-        
+
         with output_path.open('w', encoding='utf-8') as f:
             f.write('\n'.join(lines))
-    
+
     def save_coverage_csv(self, output_path: pathlib.Path) -> None:
         """Save coverage matrix as CSV file."""
         import csv
-        
+
         output_path.parent.mkdir(parents=True, exist_ok=True)
         coverage = self.stats['coverage']
-        
+
         # Create surface × dirt × method matrix
         with output_path.open('w', newline='', encoding='utf-8') as f:
             writer = csv.writer(f)
-            
+
             # Header
             surfaces = sorted(coverage['surface_type_distribution'].keys())
             dirts = sorted(coverage['dirt_type_distribution'].keys())
             methods = sorted(coverage['cleaning_method_distribution'].keys())
-            
+
             header = ['surface_type', 'dirt_type', 'cleaning_method', 'count']
             writer.writerow(header)
-            
+
             # Data rows
             for surface in surfaces:
                 for dirt in dirts:
@@ -498,29 +498,29 @@ class DatasetStatistics:
 def main():
     """Main entry point for dataset statistics."""
     import sys
-    
+
     # Determine paths
     root = pathlib.Path(__file__).resolve().parents[2]
     data_path = root / "data" / "processed" / "cleaning_docs.jsonl"
     output_dir = root / "data" / "evaluation"
-    
+
     # Create statistics calculator
     stats = DatasetStatistics(data_path)
-    
+
     # Compute all statistics
     print("Loading data...")
     stats.load_data()
     print(f"Loaded {len(stats.documents)} documents")
-    
+
     print("Computing statistics...")
     stats.compute_all()
-    
+
     # Save outputs
     print("Saving reports...")
     stats.save_json(output_dir / "dataset_stats.json")
     stats.save_text_report(output_dir / "dataset_stats.txt")
     stats.save_coverage_csv(output_dir / "coverage_matrix.csv")
-    
+
     print(f"\nStatistics saved to:")
     print(f"  - {output_dir / 'dataset_stats.json'}")
     print(f"  - {output_dir / 'dataset_stats.txt'}")

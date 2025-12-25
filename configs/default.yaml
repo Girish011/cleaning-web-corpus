@@ -10,10 +10,23 @@ crawler:
   max_images_per_page: 20
   respect_robots: true
   delay_seconds: 1.0
+  download_timeout: 30.0  # Polite timeout: 30 seconds (reduced from default 180s)
+  timeout_retry_times: 1  # Retry once for timeouts (reduced from default 3)
+  timeout_blacklist:  # Domains that frequently timeout - skip them
+    - electrolux.in
   images_store: "data/images"
   images_expires_days: 90
   images_min_height: 110
   images_min_width: 110
+  search_discovery:
+    enable: false  # Set to true to enable automatic discovery
+    provider: "google"  # "google", "bing", or "serpapi"
+    api_key: null  # Set via environment variable: GOOGLE_API_KEY, BING_API_KEY, or SERPAPI_API_KEY
+    search_engine_id: null  # For Google: set GOOGLE_SEARCH_ENGINE_ID env var
+    max_results_per_query: 100
+    delay_seconds: 1.0
+    max_urls: null  # null = no limit
+    auto_discover: false  # Automatically discover before crawling
 
 quality:
   text:
@@ -72,9 +85,23 @@ processing:
   batch_size: 100
   num_workers: 4
 
+workflow:
+  min_steps: 3  # Minimum steps required in a workflow (can be lowered to 2 for testing)
+  allow_fewer_steps_if_limited_data: true  # Allow 2 steps if corpus has limited data
+
 logging:
   level: "INFO"
   format: "%(asctime)s | %(levelname)s | %(name)s | %(message)s"
+
+clickhouse:
+  host: "localhost"
+  port: 9000
+  database: "cleaning_warehouse"
+  user: "default"
+  password: "default"  # Default password for Docker setup. Set via environment variable CLICKHOUSE_PASSWORD if needed
+  connect_timeout: 10.0
+  send_receive_timeout: 300.0
+  compression: false  # Set to true if lz4 and clickhouse-cityhash are installed
 
 # Allowed domains (from original config.json)
 allowed_domains:

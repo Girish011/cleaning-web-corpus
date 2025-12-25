@@ -1,0 +1,76 @@
+<mujoco>
+    <option timestep="0.002" gravity="0 0 -9.81"/>
+    
+    <asset>
+        <!-- Materials for better visibility -->
+        <material name="robot_base" rgba="0.4 0.4 0.4 1"/>
+        <material name="link1_mat" rgba="0.9 0.2 0.2 1"/>
+        <material name="link2_mat" rgba="0.2 0.9 0.2 1"/>
+        <material name="link3_mat" rgba="0.2 0.2 0.9 1"/>
+        <material name="tool_mat" rgba="0.8 0.6 0.2 1"/>
+        <material name="surface_mat" rgba="0.7 0.7 0.9 1"/>
+    </asset>
+    
+    <worldbody>
+        <!-- Lighting -->
+        <light pos="0 0 4" dir="0 0 -1"/>
+        <light pos="2 2 3" dir="-1 -1 -1"/>
+        
+        <!-- Ground plane -->
+        <geom name="floor" type="plane" size="2 2 0.1" rgba="0.9 0.9 0.9 1"/>
+        
+        <!-- Cleaning surface (table/counter) -->
+        <body name="cleaning_surface" pos="0.4 0 0.15">
+            <geom name="surface" type="box" size="0.3 0.3 0.02" 
+                  material="surface_mat" contype="1" conaffinity="1"/>
+        </body>
+        
+        <!-- Robot base (fixed to ground) -->
+        <body name="base" pos="0 0 0.05">
+            <geom name="base_geom" type="cylinder" size="0.08 0.1" 
+                  material="robot_base" rgba="0.4 0.4 0.4 1"/>
+            
+            <!-- Link 1: Rotating base (red) -->
+            <body name="link1" pos="0 0 0.15">
+                <joint name="joint1" type="hinge" axis="0 0 1" 
+                       range="-180 180" damping="0.1"/>
+                <geom name="link1_geom" type="cylinder" size="0.04 0.12" 
+                      material="link1_mat" rgba="0.9 0.2 0.2 1"/>
+                
+                <!-- Link 2: Shoulder (green) -->
+                <body name="link2" pos="0 0 0.2">
+                    <joint name="joint2" type="hinge" axis="0 1 0" 
+                           range="-90 90" damping="0.1"/>
+                    <geom name="link2_geom" type="cylinder" size="0.035 0.15" 
+                          material="link2_mat" rgba="0.2 0.9 0.2 1"/>
+                    
+                    <!-- Link 3: Elbow (blue) -->
+                    <body name="link3" pos="0 0 0.25">
+                        <joint name="joint3" type="hinge" axis="0 1 0" 
+                               range="-90 90" damping="0.1"/>
+                        <geom name="link3_geom" type="cylinder" size="0.03 0.12" 
+                              material="link3_mat" rgba="0.2 0.2 0.9 1"/>
+                        
+                        <!-- End effector with cleaning tool -->
+                        <body name="tool" pos="0 0 0.18">
+                            <!-- Tool handle -->
+                            <geom name="tool_handle" type="box" size="0.02 0.02 0.05" 
+                                  material="tool_mat" rgba="0.8 0.6 0.2 1"/>
+                            <!-- Cleaning sponge/brush head -->
+                            <geom name="sponge" type="box" size="0.04 0.04 0.02" 
+                                  pos="0 0 -0.07" material="tool_mat" 
+                                  rgba="0.9 0.7 0.3 1" contype="1" conaffinity="1"/>
+                        </body>
+                    </body>
+                </body>
+            </body>
+        </body>
+    </worldbody>
+    
+    <actuator>
+        <motor name="motor1" joint="joint1" gear="100" ctrllimited="true" ctrlrange="-50 50"/>
+        <motor name="motor2" joint="joint2" gear="100" ctrllimited="true" ctrlrange="-50 50"/>
+        <motor name="motor3" joint="joint3" gear="100" ctrllimited="true" ctrlrange="-50 50"/>
+    </actuator>
+</mujoco>
+

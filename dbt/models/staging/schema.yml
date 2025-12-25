@@ -1,0 +1,53 @@
+version: 2
+
+models:
+  - name: stg_documents
+    description: "Cleaned and standardized documents from raw_documents"
+    columns:
+      - name: document_id
+        description: "Unique document identifier"
+        tests:
+          - not_null
+          - unique
+      - name: url
+        description: "Source URL"
+        tests:
+          - not_null
+      - name: surface_type
+        description: "Normalized surface type"
+        tests:
+          - not_null
+      - name: dirt_type
+        description: "Normalized dirt type"
+        tests:
+          - not_null
+      - name: cleaning_method
+        description: "Normalized cleaning method"
+        tests:
+          - not_null
+      - name: quality_score
+        description: "Quality score (0-1)"
+        tests:
+          - not_null
+
+  - name: stg_steps
+    description: "Cleaned and validated cleaning steps"
+    columns:
+      - name: step_id
+        description: "Unique step identifier"
+        tests:
+          - not_null
+          - unique
+      - name: document_id
+        description: "Foreign key to stg_documents"
+        tests:
+          - not_null
+      - name: step_order
+        description: "Sequential order of step"
+        tests:
+          - not_null
+      - name: step_text
+        description: "Cleaned step text"
+        tests:
+          - not_null
+

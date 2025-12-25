@@ -1,13 +1,37 @@
-https://puffy.com/blogs/best-sleep/how-to-get-dust-out-of-pillows
-https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-clean-pillows-and-bedding/
-https://www.ariel.in/en-in/how-to-wash/stain-removal
-https://www.vanish.co.in/stain-removal/stains-on-things/how-to-clean-carpet-stain/
-https://www.floorworld.com.au/blog/carpet-care-and-maintenance-a-step-by-step-guide
-https://www.mycleaners.in/list-blog-post/how-and-when-to-clean-carpets-at-home
-https://www.thelaundress.com/blogs/tips/how-to-stain-guide-delicate-stain-guide
-https://knowingfabric.com/how-to-remove-stains-from-delicate-fabrics/
-https://www.vanish.co.in/stain-removal/stains-on-clothes/how-to-hand-wash-clothes/
-https://www.marthastewart.com/1541278/how-wash-all-your-clothes-hand
-https://bigbrandwholesale.com/wholesale-101/online-sellers-how-to-remove-dust-from-clothing-without-washing/
-https://www.vanish.co.in/stain-removal/stains-on-fabrics/how-to-clean-carpet-stains-effectively/
-https://www.electrolux.in/blog/how-to-clean-a-fabric-sofa-with-a-vacuum-cleaner-at-home/
+# Verified working URLs (from previous successful crawls)
+https://puffy.com/blogs/best-sleep/how-to-get-dust-out-of-pillows  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-clean-pillows-and-bedding/  # verified
+https://www.ariel.in/en-in/how-to-wash/stain-removal  # verified
+https://www.mycleaners.in/list-blog-post/how-and-when-to-clean-carpets-at-home  # verified
+https://knowingfabric.com/how-to-remove-stains-from-delicate-fabrics/  # verified
+https://www.vanish.co.in/stain-removal/stains-on-clothes/how-to-hand-wash-clothes/  # verified
+https://bigbrandwholesale.com/wholesale-101/online-sellers-how-to-remove-dust-from-clothing-without-washing/  # verified
+https://www.bobvila.com/articles/how-to-clean-upholstery/  # verified
+
+# New manually verified URLs (T6a) - HTTP 200 confirmed, targeting high-priority coverage gaps
+# Upholstery combinations
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-remove-pet-hair-from-upholstery/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-spot-clean-upholstery/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-remove-odor-from-upholstery/  # verified
+https://knowingfabric.com/how-to-spot-clean-upholstery/  # verified
+# Hard surfaces
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-clean-kitchen-countertops/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-remove-water-stains-from-tile/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-wipe-hard-surfaces/  # verified
+# Bathroom cleaning
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-remove-mold-from-bathroom/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-scrub-bathroom-grout/  # verified
+# Appliances
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-clean-oven/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-clean-refrigerator/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-clean-dishwasher/  # verified
+# Additional dirt types and methods
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-remove-grease-from-clothes/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-remove-water-stains/  # verified
+https://www.maidbrigade.com/blog/green-cleaning-tips/how-to-steam-clean-carpet/
+# verified
+https://ncca.co.uk/news/red-wine-on-carpet-stain-removal-guide/
+https://www.homedepot.com/c/ah/how-to-get-red-wine-out-of-carpet/9ba683603be9fa5395fab901a54760b7
+https://www.jaipurrugs.com/blog/how-to-get-red-wine-out-of-carpet
+https://www.mollymaid.com/practically-spotless/how-to-remove-red-wine-from-carpet/
+https://woolandwire.be/en/blogs/stain-guide/removere-wine-from-rug

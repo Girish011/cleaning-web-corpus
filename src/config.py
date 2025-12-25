@@ -6,7 +6,7 @@ for the cleaning corpus pipeline.
 """
 
 import pathlib
-from typing import List, Literal, Optional, Dict, Set
+from typing import List, Literal, Optional
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 
 
@@ -20,6 +20,41 @@ class ProjectConfig(BaseModel):
     version: str = Field(..., description="Project version")
 
 
+class SearchDiscoveryConfig(BaseModel):
+    """Search engine discovery configuration."""
+    enable: bool = Field(default=False, description="Enable automatic URL discovery")
+    provider: Literal["google", "bing", "serpapi"] = Field(
+        default="google",
+        description="Search engine provider"
+    )
+    api_key: Optional[str] = Field(
+        default=None,
+        description="API key (if None, tries environment variables)"
+    )
+    search_engine_id: Optional[str] = Field(
+        default=None,
+        description="Google Custom Search Engine ID (for Google provider)"
+    )
+    max_results_per_query: int = Field(
+        default=100,
+        ge=1,
+        description="Maximum results per query"
+    )
+    delay_seconds: float = Field(
+        default=1.0,
+        ge=0.0,
+        description="Delay between API calls"
+    )
+    max_urls: Optional[int] = Field(
+        default=None,
+        description="Maximum total URLs to discover (None = no limit)"
+    )
+    auto_discover: bool = Field(
+        default=False,
+        description="Automatically discover URLs before crawling"
+    )
+
+
 class CrawlerConfig(BaseModel):
     """Crawler configuration."""
     seeds_file: str = Field(default="data/seeds.txt", description="Path to seeds file")
@@ -27,10 +62,20 @@ class CrawlerConfig(BaseModel):
     max_images_per_page: int = Field(default=20, ge=1, description="Maximum images per page")
     respect_robots: bool = Field(default=True, description="Respect robots.txt")
     delay_seconds: float = Field(default=1.0, ge=0.0, description="Delay between requests in seconds")
+    download_timeout: float = Field(
+        default=30.0, ge=1.0, description="Download timeout in seconds (default: 30, was 180)")
+    timeout_retry_times: int = Field(
+        default=1, ge=0, description="Number of retries for timeout errors (default: 1, was 3)")
+    timeout_blacklist: list[str] = Field(
+        default_factory=list, description="List of domains to skip due to frequent timeouts")
     images_store: str = Field(default="data/images", description="Path to store downloaded images")
     images_expires_days: int = Field(default=90, ge=1, description="Days to keep images before expiration")
     images_min_height: int = Field(default=110, ge=1, description="Minimum image height in pixels")
     images_min_width: int = Field(default=110, ge=1, description="Minimum image width in pixels")
+    search_discovery: SearchDiscoveryConfig = Field(
+        default_factory=SearchDiscoveryConfig,
+        description="Search engine discovery configuration"
+    )
 
 
 class TextQualityConfig(BaseModel):
@@ -39,7 +84,7 @@ class TextQualityConfig(BaseModel):
     max_words: int = Field(default=50000, ge=1, description="Maximum word count")
     min_avg_word_length: float = Field(default=3.0, ge=0.0, description="Minimum average word length")
     language: str = Field(default="en", description="Target language code")
-    
+
     # Repetition filter settings
     max_char_repetition_ratio: float = Field(
         default=0.3,
@@ -69,7 +114,7 @@ class TextQualityConfig(BaseModel):
         ge=1,
         description="Minimum text length (in words) to perform repetition checks"
     )
-    
+
     # Perplexity filter settings (KenLM)
     enable_perplexity_filter: bool = Field(
         default=True,
@@ -112,7 +157,7 @@ class ImageQualityConfig(BaseModel):
         default=["jpg", "jpeg", "png", "webp"],
         description="Allowed image formats"
     )
-    
+
     # Duplicate detection settings
     enable_duplicate_detection: bool = Field(
         default=True,
@@ -222,6 +267,20 @@ class ExtractionConfig(BaseModel):
     llm: LLMConfig = Field(default_factory=LLMConfig)
 
 
+class WorkflowConfig(BaseModel):
+    """Workflow planning configuration."""
+    min_steps: int = Field(
+        default=3,
+        ge=1,
+        le=20,
+        description="Minimum number of steps required in a workflow (default: 3, can be lowered to 2 for testing)"
+    )
+    allow_fewer_steps_if_limited_data: bool = Field(
+        default=True,
+        description="If True, allow workflows with fewer steps if corpus has limited data (min 2 steps)"
+    )
+
+
 class QualityConfig(BaseModel):
     """Quality filtering configuration."""
     text: TextQualityConfig = Field(default_factory=TextQualityConfig)
@@ -285,6 +344,46 @@ class LoggingConfig(BaseModel):
     )
 
 
+class ClickHouseConfig(BaseModel):
+    """ClickHouse database configuration."""
+    host: str = Field(
+        default="localhost",
+        description="ClickHouse server host"
+    )
+    port: int = Field(
+        default=9000,
+        ge=1,
+        le=65535,
+        description="ClickHouse native protocol port (default: 9000)"
+    )
+    database: str = Field(
+        default="cleaning_warehouse",
+        description="ClickHouse database name"
+    )
+    user: str = Field(
+        default="default",
+        description="ClickHouse username"
+    )
+    password: str = Field(
+        default="",
+        description="ClickHouse password (empty string for no password)"
+    )
+    connect_timeout: float = Field(
+        default=10.0,
+        ge=1.0,
+        description="Connection timeout in seconds"
+    )
+    send_receive_timeout: float = Field(
+        default=300.0,
+        ge=1.0,
+        description="Send/receive timeout in seconds"
+    )
+    compression: bool = Field(
+        default=True,
+        description="Enable compression for data transfer"
+    )
+
+
 # ============================================================================
 # Main Configuration Model
 # ============================================================================
@@ -296,14 +395,14 @@ class Config(BaseModel):
     This model validates the entire configuration structure and provides
     type-safe access to all configuration values.
     """
-    
+
     model_config = ConfigDict(
         # Allow extra fields for forward compatibility
         extra="allow",
         # Validate assignment
         validate_assignment=True,
     )
-    
+
     project: ProjectConfig = Field(
         default_factory=lambda: ProjectConfig(name="cleaning-corpus", version="0.2.0")
     )
@@ -314,6 +413,8 @@ class Config(BaseModel):
     enrichment: EnrichmentConfig = Field(default_factory=EnrichmentConfig)
     processing: ProcessingConfig = Field(default_factory=ProcessingConfig)
     logging: LoggingConfig = Field(default_factory=LoggingConfig)
+    clickhouse: ClickHouseConfig = Field(default_factory=ClickHouseConfig)
+    workflow: WorkflowConfig = Field(default_factory=WorkflowConfig)
     allowed_domains: List[str] = Field(
         default_factory=list,
         description="List of allowed domains for crawling"
@@ -339,23 +440,23 @@ def load_config(config_path: Optional[pathlib.Path] = None) -> Config:
         ValidationError: If config doesn't match schema.
     """
     import yaml
-    
+
     if config_path is None:
         # Default to configs/default.yaml relative to project root
         # Assuming this file is in src/, go up 2 levels to project root
         project_root = pathlib.Path(__file__).resolve().parents[1]
         config_path = project_root / "configs" / "default.yaml"
-    
+
     if not config_path.exists():
         raise FileNotFoundError(f"Config file not found: {config_path}")
-    
+
     # Load YAML
     with config_path.open() as f:
         config_dict = yaml.safe_load(f)
-    
+
     if config_dict is None:
         config_dict = {}
-    
+
     # Validate with Pydantic
     try:
         config = Config.model_validate(config_dict)

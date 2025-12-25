@@ -24,7 +24,7 @@ class EnrichmentPipeline:
     - Future: NER/LLM extraction (Phase 4.2)
     - Future: Image captioning (Phase 4.3)
     """
-    
+
     def __init__(
         self,
         extraction_method: str = "rule_based",
@@ -63,7 +63,7 @@ class EnrichmentPipeline:
         self.enable_tools_extraction = enable_tools_extraction
         self.enable_steps_extraction = enable_steps_extraction
         self.min_steps_confidence = min_steps_confidence
-        
+
         # Initialize extractor based on method
         if extraction_method == "rule_based":
             self.extractor = RuleBasedExtractor(
@@ -109,7 +109,7 @@ class EnrichmentPipeline:
                 self.extraction_method = "rule_based"  # Update method
         else:
             raise ValueError(f"Unknown extraction method: {extraction_method}")
-    
+
     def enrich(self, document: Dict) -> Dict:
         """
         Enrich a document with structured information.
@@ -128,40 +128,40 @@ class EnrichmentPipeline:
         """
         text = document.get("main_text", "")
         url = document.get("url", "")
-        
+
         if not text:
             logger.debug(f"No text found in document {url}, skipping enrichment")
             return document
-        
+
         try:
             # Extract structured information
             extracted = self.extractor.extract_all(text, url)
-            
+
             # Merge extracted data into document
             # Preserve existing fields, but update with extracted values
             enriched = document.copy()
-            
+
             # Update surface_type, dirt_type, cleaning_method (may override existing)
             enriched["surface_type"] = extracted["surface_type"]
             enriched["dirt_type"] = extracted["dirt_type"]
             enriched["cleaning_method"] = extracted["cleaning_method"]
-            
+
             # Add new fields
             enriched["tools"] = extracted["tools"]
             enriched["steps"] = extracted["steps"]
-            
+
             # Add detailed extraction data (for analysis/debugging)
             enriched["tools_detailed"] = extracted["tools_detailed"]
             enriched["steps_detailed"] = extracted["steps_detailed"]
             enriched["extraction_metadata"] = extracted["extraction_metadata"]
-            
+
             return enriched
-            
+
         except Exception as e:
             logger.error(f"Error enriching document {url}: {e}")
             # Return original document on error (graceful degradation)
             return document
-    
+
     def enrich_batch(self, documents: list[Dict]) -> list[Dict]:
         """
         Enrich a batch of documents.
@@ -176,5 +176,5 @@ class EnrichmentPipeline:
         for doc in documents:
             enriched_doc = self.enrich(doc)
             enriched.append(enriched_doc)
-        
+
         return enriched

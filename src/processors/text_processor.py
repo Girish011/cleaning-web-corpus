@@ -66,7 +66,7 @@ def process_url(url: str, title: str, image_urls: list = None, video_urls: list 
     # Apply text quality filters (includes repetition filter)
     text_filter = TextQualityFilter(config.quality.text)
     filter_result = text_filter.filter(main_text)
-    
+
     if not filter_result["passed"]:
         reason = filter_result['reason']
         # Log with more detail for repetition failures
@@ -86,7 +86,7 @@ def process_url(url: str, title: str, image_urls: list = None, video_urls: list 
 
     # Create base record (before enrichment)
     now_iso = datetime.utcnow().isoformat() + "Z"
-    
+
     base_record = {
         "url": url,
         "title": title,
@@ -101,11 +101,11 @@ def process_url(url: str, title: str, image_urls: list = None, video_urls: list 
         "image_details": image_details or [],
         "video_metadata": video_metadata or [],
     }
-    
+
     # Note: Image filtering happens later in main() after images are downloaded
     # For now, just store image URLs
     base_record["image_urls"] = image_urls or []
-    
+
     return base_record
 
 
@@ -120,7 +120,7 @@ def main():
     skipped_quality = 0
     skipped_other = 0
     total = 0
-    
+
     # Initialize CLIP alignment scorer once (model loading is expensive)
     # This is Phase-3.7: CLIP text-image alignment scoring
     alignment_scorer = CLIPAlignmentScorer(config.quality.alignment)
@@ -128,7 +128,7 @@ def main():
         logger.info("CLIP alignment scorer initialized successfully")
     else:
         logger.info("CLIP alignment scorer not available (will skip alignment filtering)")
-    
+
     # Initialize enrichment pipeline (Phase 4.1/4.2: Structured extraction)
     enrichment_pipeline = EnrichmentPipeline(
         extraction_method=config.enrichment.extraction.method,
@@ -147,13 +147,13 @@ def main():
         llm_cache_ttl_days=config.enrichment.extraction.llm.cache_ttl_days,
     )
     logger.info(f"Enrichment pipeline initialized (method: {config.enrichment.extraction.method})")
-    
+
     # Initialize BLIP-2 captioner (Phase 4.3: Image captioning)
     if config.enrichment.captioning.enable:
         device = config.enrichment.captioning.device
         if device == "auto":
             device = None  # Let BLIP2Captioner auto-detect
-        
+
         captioner = BLIP2Captioner(
             model_name=config.enrichment.captioning.model,
             device=device,
@@ -193,13 +193,13 @@ def main():
             # Apply enrichment (Phase 4.1: Structured extraction)
             # This extracts: surface_type, dirt_type, cleaning_method, tools, steps
             record = enrichment_pipeline.enrich(record)
-            
+
             # Apply image quality filters if images metadata is available
             images_metadata = obj.get("images", [])
             if images_metadata:
                 image_filter = ImageQualityFilter(config.quality.image)
                 passed_images, failed_images = image_filter.filter_images(images_metadata)
-                
+
                 # Apply CLIP text-image alignment scoring (Phase-3.7)
                 # This is a key differentiator for multi-modal quality
                 if passed_images and record.get("main_text"):
@@ -207,10 +207,10 @@ def main():
                         aligned_images, misaligned_images = alignment_scorer.filter_by_alignment(
                             record["main_text"], passed_images
                         )
-                        
+
                         # Update passed_images with aligned images
                         passed_images = aligned_images
-                        
+
                         # Add misaligned images to failed_images for logging
                         if misaligned_images:
                             failed_images.extend(misaligned_images)
@@ -223,34 +223,34 @@ def main():
                                 reason = misaligned_img.get("filter_reason", "unknown")
                                 logger.debug(f"  - {misaligned_img.get('url', 'unknown')}: {reason} (score: {score})")
                     # If CLIP not available, passed_images remain unchanged (graceful fallback)
-                
+
                 # Apply image captioning (Phase 4.3: BLIP-2 captioning)
                 if passed_images and captioner and captioner.is_available():
                     prompt = config.enrichment.captioning.prompt
                     captioned_images = captioner.caption_images(passed_images, prompt=prompt)
                     passed_images = captioned_images
-                    
+
                     # Log captioning stats
                     captioned_count = sum(1 for img in captioned_images if img.get("caption"))
                     if captioned_count > 0:
                         logger.debug(
                             f"Generated captions for {captioned_count}/{len(captioned_images)} images for {url}"
                         )
-                
+
                 # Update record with filtered images
                 record["images"] = passed_images
-                
+
                 if failed_images:
                     # Count duplicates separately
                     duplicates = [f for f in failed_images if "duplicate" in f.get("filter_reason", "").lower()]
                     # Count misaligned separately
                     misaligned = [f for f in failed_images if "score_too_low" in f.get("filter_reason", "")]
                     other_failures = [
-                        f for f in failed_images 
+                        f for f in failed_images
                         if "duplicate" not in f.get("filter_reason", "").lower()
                         and "score_too_low" not in f.get("filter_reason", "")
                     ]
-                    
+
                     logger.debug(
                         f"Filtered out {len(failed_images)} images for {url} "
                         f"({len(duplicates)} duplicates, {len(misaligned)} misaligned, {len(other_failures)} quality failures)"

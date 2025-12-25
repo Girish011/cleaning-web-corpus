@@ -221,11 +221,13 @@ STEP_PATTERNS = [
     # Numbered steps: "Step 1:", "1.", "1)", etc.
     re.compile(r'^(?:step\s+)?(\d+)[\.\):]\s+(.+)$', re.IGNORECASE | re.MULTILINE),
     # Ordinal steps: "First,", "Second,", "Then,", "Next,", "Finally,"
-    re.compile(r'^(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|then|next|finally|lastly)[,:]\s+(.+)$', re.IGNORECASE | re.MULTILINE),
+    re.compile(
+        r'^(?:first|second|third|fourth|fifth|sixth|seventh|eighth|ninth|tenth|then|next|finally|lastly)[,:]\s+(.+)$', re.IGNORECASE | re.MULTILINE),
     # Bullet points with action verbs (allow leading whitespace)
     re.compile(r'^\s*[-•*]\s+(.+)$', re.MULTILINE),
     # Action-oriented sentences (start with imperative verbs)
-    re.compile(r'^(?:mix|apply|spray|wipe|scrub|rinse|dry|let|allow|remove|blot|vacuum|wash|soak|dilute|combine|add|pour|dampen|saturate|cover|place|wait|repeat)[\s,].+$', re.IGNORECASE | re.MULTILINE),
+    re.compile(
+        r'^(?:mix|apply|spray|wipe|scrub|rinse|dry|let|allow|remove|blot|vacuum|wash|soak|dilute|combine|add|pour|dampen|saturate|cover|place|wait|repeat)[\s,].+$', re.IGNORECASE | re.MULTILINE),
 ]
 
 # Keywords that indicate step boundaries
@@ -259,14 +261,14 @@ def find_keywords_in_text(text: str, keyword_dict: Dict[str, List[str]]) -> Dict
     """
     text_lower = text.lower()
     matches: Dict[str, float] = {}
-    
+
     for category, keywords in keyword_dict.items():
         count = 0
         for keyword in keywords:
             # Count occurrences (word boundaries to avoid partial matches)
             pattern = r'\b' + re.escape(keyword.lower()) + r'\b'
             count += len(re.findall(pattern, text_lower))
-        
+
         # Confidence based on number of matches (normalized)
         if count > 0:
             # Simple confidence: more matches = higher confidence
@@ -274,7 +276,7 @@ def find_keywords_in_text(text: str, keyword_dict: Dict[str, List[str]]) -> Dict
             matches[category] = min(1.0, count / max(1, len(keywords) / 2))
         else:
             matches[category] = 0.0
-    
+
     return matches
 
 
@@ -291,13 +293,13 @@ def extract_best_match(matches: Dict[str, float], default: str = "other") -> tup
     """
     if not matches:
         return default, 0.0
-    
+
     # Filter out zero-confidence matches
     non_zero = {k: v for k, v in matches.items() if v > 0}
-    
+
     if not non_zero:
         return default, 0.0
-    
+
     # Return category with highest confidence
     best_category = max(non_zero.items(), key=lambda x: x[1])
     return best_category[0], best_category[1]

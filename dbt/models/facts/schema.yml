@@ -1,0 +1,27 @@
+version: 2
+
+models:
+  - name: fct_cleaning_procedures
+    description: "Fact table aggregating cleaning procedures by (surface × dirt × method) combination"
+    columns:
+      - name: surface_type
+        description: "Surface type dimension"
+        tests:
+          - not_null
+      - name: dirt_type
+        description: "Dirt type dimension"
+        tests:
+          - not_null
+      - name: cleaning_method
+        description: "Cleaning method dimension"
+        tests:
+          - not_null
+      - name: document_count
+        description: "Number of documents for this combination"
+        tests:
+          - not_null
+      - name: total_occurrences
+        description: "Total occurrences of this combination"
+        tests:
+          - not_null
+

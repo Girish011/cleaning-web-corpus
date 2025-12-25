@@ -19,38 +19,38 @@ def main():
     """
     if not DATA_PATH.exists():
         raise FileNotFoundError(f"Processed file not found: {DATA_PATH}")
-    
+
     # Use comprehensive statistics module
     stats = DatasetStatistics(DATA_PATH)
     stats.load_data()
     stats.compute_all()
-    
+
     # Print basic summary (backward compatible output)
     basic = stats.stats['basic']
     coverage = stats.stats['coverage']
-    
+
     print(f"Total documents: {basic['total_documents']}")
     print("By source_type:")
     for k, v in sorted(basic['source_type_distribution'].items(), key=lambda x: -x[1]):
         print(f"  {k}: {v}")
-    
+
     print("By surface_type:")
     for k, v in sorted(coverage['surface_type_distribution'].items(), key=lambda x: -x[1]):
         print(f"  {k}: {v}")
-    
+
     print("By dirt_type:")
     for k, v in sorted(coverage['dirt_type_distribution'].items(), key=lambda x: -x[1]):
         print(f"  {k}: {v}")
-    
+
     print("By cleaning_method:")
     for k, v in sorted(coverage['cleaning_method_distribution'].items(), key=lambda x: -x[1]):
         print(f"  {k}: {v}")
-    
+
     text_stats = stats.stats['text']
     if text_stats['word_count']:
         avg_len = text_stats['word_count']['mean']
         print(f"Average main_text length (words): {avg_len:.1f}")
-    
+
     # Print dirt_type x cleaning_method matrix
     print("dirt_type x cleaning_method:")
     methods_order = sorted(coverage['cleaning_method_distribution'].keys())

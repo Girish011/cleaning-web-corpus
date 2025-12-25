@@ -1,0 +1,74 @@
+version: 2
+
+sources:
+  - name: cleaning_corpus
+    description: "Raw ClickHouse tables containing crawled and processed cleaning documents"
+    database: cleaning_warehouse
+    schema: cleaning_warehouse
+    tables:
+      - name: raw_documents
+        description: "Raw crawled and processed documents with all metadata"
+        columns:
+          - name: document_id
+            description: "Unique identifier (hash of URL or UUID)"
+          - name: url
+            description: "Source URL"
+          - name: title
+            description: "Document title"
+          - name: main_text
+            description: "Full extracted text content"
+          - name: surface_type
+            description: "Normalized surface type"
+          - name: dirt_type
+            description: "Normalized dirt type"
+          - name: cleaning_method
+            description: "Normalized cleaning method"
+          - name: extraction_method
+            description: "Method used for extraction"
+          - name: extraction_confidence
+            description: "Overall extraction confidence score"
+      
+      - name: steps
+        description: "Individual cleaning steps extracted from documents"
+        columns:
+          - name: step_id
+            description: "Unique identifier (UUID or hash)"
+          - name: document_id
+            description: "Foreign key to raw_documents.document_id"
+          - name: step_order
+            description: "Sequential order of step within document"
+          - name: step_text
+            description: "Full text of the cleaning step"
+          - name: confidence
+            description: "Extraction confidence score"
+      
+      - name: tools
+        description: "Cleaning tools/equipment mentioned or extracted from documents"
+        columns:
+          - name: tool_id
+            description: "Unique identifier (UUID or hash)"
+          - name: document_id
+            description: "Foreign key to raw_documents.document_id"
+          - name: tool_name
+            description: "Normalized tool name"
+          - name: tool_category
+            description: "Tool category"
+          - name: confidence
+            description: "Extraction confidence score"
+      
+      - name: quality_metrics
+        description: "Quality metrics computed for documents and images"
+        columns:
+          - name: metric_id
+            description: "Unique identifier (UUID)"
+          - name: document_id
+            description: "Foreign key to raw_documents.document_id"
+          - name: metric_type
+            description: "Type of metric"
+          - name: metric_name
+            description: "Specific metric name"
+          - name: metric_value
+            description: "Metric value"
+          - name: passed
+            description: "Whether metric passed threshold"
+

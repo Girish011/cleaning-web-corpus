@@ -1,0 +1,73 @@
+<mujoco model="cleaning_robot_arm">
+  <include file="low_cost_robot_arm_on_table.xml"/>
+  
+  <asset>
+    <!-- Materials for cleaning props -->
+    <material name="surface_mat" rgba="0.7 0.7 0.9 1"/>
+    <material name="sponge_mat" rgba="0.9 0.7 0.3 1"/>
+    <material name="bottle_mat" rgba="0.8 0.8 0.2 1"/>
+    <material name="bucket_mat" rgba="0.5 0.5 0.5 1"/>
+    <material name="stain_mat" rgba="0.6 0.2 0.2 1"/>
+  </asset>
+  
+  <worldbody>
+    <!-- Ground plane -->
+    <geom name="floor" type="plane" size="1 1 0.1" rgba="0.9 0.9 0.9 1" pos="0 0 0"/>
+    
+    <!-- Lighting -->
+    <light pos="0 0 3" dir="0 0 -1"/>
+    <light pos="1 1 2" dir="-1 -1 -1"/>
+    
+    <!-- Cleaning surface/table (robot will be mounted ON this table) -->
+    <body name="cleaning_table" pos="0 0 0.15">
+      <geom name="table_top" type="box" size="0.3 0.3 0.02" 
+            material="surface_mat" rgba="0.7 0.7 0.9 1" 
+            contype="1" conaffinity="1"/>
+      <geom name="table_leg1" type="cylinder" size="0.02 0.15" 
+            pos="-0.25 -0.25 -0.17" rgba="0.5 0.5 0.5 1"/>
+      <geom name="table_leg2" type="cylinder" size="0.02 0.15" 
+            pos="0.25 -0.25 -0.17" rgba="0.5 0.5 0.5 1"/>
+      <geom name="table_leg3" type="cylinder" size="0.02 0.15" 
+            pos="-0.25 0.25 -0.17" rgba="0.5 0.5 0.5 1"/>
+      <geom name="table_leg4" type="cylinder" size="0.02 0.15" 
+            pos="0.25 0.25 -0.17" rgba="0.5 0.5 0.5 1"/>
+    </body>
+    
+    <!-- Robot base is now positioned ON the table in the included model -->
+    <!-- (base_link is at z=0.17 in low_cost_robot_arm_on_table.xml) -->
+    
+    <!-- Stains/dirt to clean (on the table, relative to table center) -->
+    <body name="stain1" pos="0.15 0.05 0.17">
+      <geom name="stain1_geom" type="cylinder" size="0.03 0.005" 
+            material="stain_mat" rgba="0.6 0.2 0.2 1" 
+            contype="1" conaffinity="1"/>
+    </body>
+    <body name="stain2" pos="0.15 -0.08 0.17">
+      <geom name="stain2_geom" type="cylinder" size="0.025 0.005" 
+            material="stain_mat" rgba="0.6 0.2 0.2 1" 
+            contype="1" conaffinity="1"/>
+    </body>
+    
+    <!-- Cleaning bottle (spray bottle) - graspable object on table -->
+    <!-- Position bottle at [0.10, -0.12, 0.23] - reachable with base=-2.2 and horizontal gripper -->
+    <body name="cleaning_bottle" pos="0.10 -0.12 0.23">
+      <freejoint/>  <!-- Make it graspable/movable -->
+      <geom name="bottle_body" type="cylinder" size="0.02 0.06" 
+            material="bottle_mat" rgba="0.8 0.8 0.2 1"
+            contype="1" conaffinity="1" friction="1.0 0.5 0.1"/>
+      <geom name="bottle_top" type="box" size="0.015 0.015 0.02" 
+            pos="0 0 0.08" rgba="0.6 0.6 0.6 1"
+            contype="1" conaffinity="1" friction="1.0 0.5 0.1"/>
+      <inertial pos="0 0 0.06" mass="0.15" diaginertia="0.0001 0.0001 0.0001"/>
+    </body>
+    
+    <!-- Bucket for water - on floor next to table -->
+    <body name="water_bucket" pos="-0.2 0.15 0.1">
+      <geom name="bucket" type="cylinder" size="0.08 0.12" 
+            material="bucket_mat" rgba="0.5 0.5 0.5 1"
+            contype="1" conaffinity="1"/>
+      <geom name="bucket_water" type="cylinder" size="0.075 0.08" 
+            pos="0 0 0.02" rgba="0.3 0.5 0.9 0.6"/>
+    </body>
+  </worldbody>
+</mujoco>
