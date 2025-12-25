@@ -95,3 +95,7 @@ dbt/logs/
 tasks.md
 
 run_commands.txt
+sonar-project.properties
+commit_review.md
+commit_summary.md
+docs/
