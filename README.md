@@ -61,10 +61,10 @@ README.md
 
 ## Experiments
 
-- **Experiment A – Seed targeting & coverage**:  
+- **Experiment A - Seed targeting & coverage**:  
   Analyze how adding targeted seeds changes tag distributions and dirt_type × cleaning_method coverage.
 
-- **Experiment B – Length-based quality filtering**:  
+- **Experiment B - Length-based quality filtering**:  
   Study how different minimum length thresholds affect corpus size and quality.
 
 (Experiment reports live under `analysis/experiments/`.)
